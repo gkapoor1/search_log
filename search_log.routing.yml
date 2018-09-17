@@ -1,0 +1,21 @@
+search_log.default_controller_search_log:
+  path: 'admin/config/search/search_log'
+  defaults:
+    _controller: '\Drupal\search_log\Controller\SearchLogController::search_log'
+    _title: 'View Search Log'
+  requirements:
+    _permission: 'access content'
+search_log.default_controller_search_history:
+  path: '/search_log/search_history'
+  defaults:
+    _controller: '\Drupal\search_log\Controller\SearchLogController::search_history'
+    _title: 'Search Log'
+  requirements:
+    _permission: 'access content'
+search_log.settings:
+  path: '/admin/config/search_log/settings'
+  defaults:
+    _title: 'Configure Search Log'
+    _form: '\Drupal\search_log\Form\SearchLogForm'
+  requirements:
+    _permission: 'administer search_log'

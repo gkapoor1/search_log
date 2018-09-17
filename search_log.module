@@ -1,0 +1,84 @@
+<?php
+
+/**
+ * @file
+ * Contains search_log.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+
+/**
+ * Implements hook_help().
+ */
+function search_log_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the search_log module.
+    case 'help.page.search_log':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Maintains search history and provides search reports.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function search_log_theme() {
+  return [
+    'search_log' => [
+      'render element' => 'children',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_search_preprocess().
+ * @todo Improve the logic on term search.
+ */
+function search_log_search_preprocess($text, $langcode = NULL) {
+
+  if (!isset($langcode)) {
+    $langcode = \Drupal::languageManager()->getCurrentLanguage()->getId();
+  }
+
+  $query = \Drupal::database()->select('search_log');
+  $query->fields('search_log', ['searchterm', 'counter', 'language', 'result', 'module']);
+  $searchTerm = $query->execute()->fetchAll();
+  $flag = 0;
+  if (empty($searchTerm)) {
+    $query = \Drupal::database()->insert('search_log');
+    $query->fields([
+      'searchterm' => $text,
+      'language' => $langcode,
+    ]);
+    $query->execute();
+    $flag = 2;
+  }
+  foreach ($searchTerm as $key => $value) {
+    if ($value->searchterm == $text) {
+      $flag = 1;
+    }
+  }
+  if ($flag == 1) {
+    $Count = $value->counter;
+    $query = \Drupal::database()->update('search_log');
+    $query->fields(['counter' => $Count + 1]);
+    $query->condition('searchterm', $value = $text);
+    $query->execute();
+  }
+  elseif ($flag == 0) {
+    $query = \Drupal::database()->insert('search_log');
+    $query->fields([
+      'searchterm' => $text,
+      'counter' => 1,
+      'language' => $langcode,
+    ]);
+    $query->execute();
+
+  }
+
+}

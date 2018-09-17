@@ -1,0 +1,72 @@
+<?php
+
+/**
+ * @file
+ * Install file for Search log.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function search_log_schema() {
+  $schema['search_log'] = [
+    'description' => 'Log of search terms.',
+    'fields' => [
+      'qid' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Primary Key: Auto-incrementing query ID.',
+      ],
+      'searchterm' => [
+        'type' => 'varchar',
+        'length' => 64,
+        'default' => '',
+
+      ],
+      'q' => [
+        'description' => 'Query string.',
+        'type' => 'varchar',
+        'length' => 64,
+        'default' => '',
+      ],
+      'module' => [
+        'description' => 'Module implementing search.',
+        'type' => 'varchar',
+        'length' => 64,
+        'default' => '',
+      ],
+      'language' => [
+        'description' => 'Language of the query.',
+        'type' => 'varchar',
+        'length' => 12,
+        'default' => '',
+      ],
+      'day' => [
+        'description' => 'Day query was performed.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'default' => 0,
+      ],
+      'counter' => [
+        'description' => 'Number of times query performed on day.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'default' => 0,
+        'size' => 'medium',
+      ],
+      'result' => [
+        'description' => 'Indicator of failed or successful query.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'default' => 0,
+      ],
+    ],
+    'primary key' => ['qid'],
+    'indexes' => [
+      'mod' => ['module'],
+      'day' => ['day'],
+    ],
+  ];
+
+  return $schema;
+}

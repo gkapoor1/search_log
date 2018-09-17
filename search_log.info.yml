@@ -1,0 +1,4 @@
+name: Search Log
+type: module
+description: 'Maintains search history and provides search reports.'
+core: 8.x
